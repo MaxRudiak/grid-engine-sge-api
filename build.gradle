@@ -1,14 +1,15 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.15'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.springframework.boot' version '$springBootVersion'
+	id 'io.spring.dependency-management' version '$springDependencyManagementVersion'
 }
 
 group = 'com.rudiak.grid.engine'
-version = '0.0.1-SNAPSHOT'
+	version = '1.0-SNAPSHOT'
 
 java {
 	sourceCompatibility = '11'
+	targetCompatibility = '11'
 }
 
 configurations {
@@ -22,11 +23,21 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.flywaydb:flyway-core'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	/* Lombok */
+	compileOnly 'org.projectlombok:lombok:$lombokVersion'
+	annotationProcessor 'org.projectlombok:lombok:$lombokVersion'
+	testCompileOnly 'org.projectlombok:lombok:$lombokVersion'
+	testAnnotationProcessor 'org.projectlombok:lombok:$lombokVersion'
+
+	/* Spring */
+	implementation 'org.springframework.boot:spring-boot-starter-web:$springBootVersion'
+
+	/* Swagger */
+	implementation 'io.springfox:springfox-boot-starter:$swaggerVersion'
+
+	/* Logger slf4j */
+
+	/* JUnit*/
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
