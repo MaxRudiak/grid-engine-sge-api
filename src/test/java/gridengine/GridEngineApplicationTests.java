@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class GridEngineApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void testAppHasAGreeting() {
+		GridEngineApplicationTests classUnderTest = new GridEngineApplicationTests();
 	}
-
 }
