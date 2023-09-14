@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '$springBootVersion'
-	id 'io.spring.dependency-management' version '$springDependencyManagementVersion'
+	id "org.springframework.boot" version "$springBootVersion"
+	id "io.spring.dependency-management" version "$springDependencyManagementVersion"
 }
 
 group = 'com.rudiak.grid.engine'
@@ -24,22 +24,28 @@ repositories {
 
 dependencies {
 	/* Lombok */
-	compileOnly 'org.projectlombok:lombok:$lombokVersion'
-	annotationProcessor 'org.projectlombok:lombok:$lombokVersion'
-	testCompileOnly 'org.projectlombok:lombok:$lombokVersion'
-	testAnnotationProcessor 'org.projectlombok:lombok:$lombokVersion'
+	compileOnly "org.projectlombok:lombok:$lombokVersion"
+	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+	testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
 	/* Spring */
-	implementation 'org.springframework.boot:spring-boot-starter-web:$springBootVersion'
+	implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
 
 	/* Swagger */
-	implementation 'io.springfox:springfox-boot-starter:$swaggerVersion'
+	implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
 
-	/* Logger slf4j */
+	/* Jackson XML DataFormat*/
+	implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonDataFormatVersion"
+
+	/* logback */
+	implementation "ch.qos.logback:logback-core:$logbackVersion"
+	implementation "ch.qos.logback:logback-classic:$logbackVersion"
 
 	/* JUnit*/
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
 }
 
 tasks.named('test') {
