@@ -38,6 +38,11 @@ dependencies {
 	/* Jackson XML DataFormat*/
 	implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonDataFormatVersion"
 
+	/*JAXB API*/
+	implementation "jakarta.xml.bind:jakarta.xml.bind-api:$jakartaBindingVersion"
+	implementation "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
+	implementation "jakarta.activation:jakarta.activation-api:$jakartaActivationVersion"
+
 	/* logback */
 	implementation "ch.qos.logback:logback-core:$logbackVersion"
 	implementation "ch.qos.logback:logback-classic:$logbackVersion"
