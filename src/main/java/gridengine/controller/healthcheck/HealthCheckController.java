@@ -1,4 +1,4 @@
-package gridengine.controller;
+package gridengine.controller.healthcheck;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
