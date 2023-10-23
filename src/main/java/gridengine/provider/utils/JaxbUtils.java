@@ -9,15 +9,16 @@ import lombok.NoArgsConstructor;
 import java.io.StringReader;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("unchecked")
 public final class JaxbUtils {
 
     public static <T> T unmarshall(final String xml, final Class<T> clazz) {
 
-        try{
+        try {
             final JAXBContext context = JAXBContext.newInstance(clazz);
             final Unmarshaller unmarshaller = context.createUnmarshaller();
             return (T) unmarshaller.unmarshal(new StringReader(xml));
-        } catch (JAXBException e) {
+        } catch (final JAXBException e) {
             throw new IllegalStateException(e);
         }
     }
