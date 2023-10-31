@@ -139,4 +139,8 @@ public class SgeJobProvider implements JobProvider {
         jobState.setStateCode(stateCode);
         return jobState;
         }
+
+        public void setQstatXml(String qstatXml) {
+            QSTAT_XML = qstatXml;
+        }
 }
