@@ -1,22 +1,27 @@
 package gridengine.entity.host.sge;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * This class represents xml tag "hostvalue".
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name="hostvalue")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SgeHostValue {
 
     /**
      * Xml attribute "name" of element "hostvalue".
      */
-    @XmlAttribute(name = "hostvalue")
+    @XmlAttribute(name = "name")
     private String name;
+    @XmlValue
+    private String value;
 }
