@@ -21,7 +21,7 @@ public class SgeHostValue {
      * Xml attribute "name" of element "hostvalue".
      */
     @XmlAttribute(name = "name")
-    private String name;
+    private SGEHostProperty name;
     @XmlValue
     private String value;
 }
