@@ -53,6 +53,10 @@ dependencies {
 	testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
 	testImplementation "junit:junit:$junit4Version"
 
+	// Collection4
+	implementation "org.apache.commons:commons-collections4:$commonsVersion"
+	implementation "commons-io:commons-io:$commonsIOVersions"
+
 }
 
 tasks.named('test') {

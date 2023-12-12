@@ -25,31 +25,31 @@ public class Host {
     /**
      * Number of processors provided by host.
      */
-    private int numOfProcessors;
+    private Integer numOfProcessors;
 
     /**
      * A medium time average OS runs queue length.
      */
-    private double load;
+    private Double load;
 
     /**
      * Total amount of memory.
      */
-    private long memTotal;
+    private Long memTotal;
 
     /**
      * Total amount of use memory.
      */
-    private long memUsed;
+    private Long memUsed;
 
     /**
      * Total amount of swap space
      * (memory in form of a partition or a file).
      */
-    private double totalSwapSpace;
+    private Double totalSwapSpace;
 
     /**
      * Total Amount of used swap space.
      */
-    private double usedSwapSpace;
+    private Double usedSwapSpace;
 }
