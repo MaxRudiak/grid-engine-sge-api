@@ -17,7 +17,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SgeHostListing {
 
-    @XmlElementWrapper(name = "qhost")
     @XmlElement(name = "host")
     private List<SgeHost> sgeHosts;
 }
