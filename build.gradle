@@ -1,6 +1,7 @@
 plugins {
 	id 'java'
 	id 'pmd'
+	id 'checkstyle'
 	id "org.springframework.boot" version "$springBootVersion"
 	id "io.spring.dependency-management" version "$springDependencyManagementVersion"
 }
@@ -60,7 +61,7 @@ dependencies {
 
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
 
@@ -68,4 +69,8 @@ pmd {
 	ruleSetFiles = files("$rootDir/config/pmd/pmd-ruleset.xml")
 	ruleSets = []
 	consoleOutput = true
+}
+
+checkstyle {
+	toolVersion = '8.29'
 }
