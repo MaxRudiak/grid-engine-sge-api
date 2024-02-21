@@ -1,13 +1,21 @@
 package gridengine.provider.job.sge;
 
+import gridengine.cmd.SimpleCmdExecutor;
+import gridengine.entity.CommandResult;
 import gridengine.entity.EngineType;
+import gridengine.entity.Listing;
 import gridengine.entity.job.Job;
 import gridengine.entity.job.JobState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 public class SgeJobProviderTest {
 
@@ -61,33 +69,34 @@ public class SgeJobProviderTest {
             "  </job_info>\n" +
             "</job_info>";
 
-    private final SgeJobProvider jobProvider = new SgeJobProvider();
+    private final SimpleCmdExecutor mockCmdExecutor = mock(SimpleCmdExecutor.class);
+    private final SgeJobProvider sgeJobProvider = new SgeJobProvider(mockCmdExecutor);
+    private final CommandResult commandResult = new CommandResult();
 
     @Test
     public void shouldFailWithInvalidXml() {
-        jobProvider.setQstatXml(INVALID_XML);
+        final List<String> jobList = Collections.singletonList(INVALID_XML);
+        commandResult.setStdOut(jobList);
+        commandResult.setStdErr(new ArrayList<>());
+        doReturn(commandResult).when(mockCmdExecutor).execute("qstat", "-xml");
 
-        Assertions.assertEquals(jobProvider.getProviderType(), EngineType.SGE);
-        Assertions.assertThrows(IllegalStateException.class, jobProvider::listJobs);
+        Assertions.assertEquals(sgeJobProvider.getProviderType(), EngineType.SGE);
+        Assertions.assertThrows(IllegalStateException.class, sgeJobProvider::listJobs);
     }
 
     @Test
     public void shouldNotFailWithEmptyJobList() {
-        jobProvider.setQstatXml(EMPTY_JOB_LIST);
+        final List<String> jobList = Collections.singletonList(EMPTY_JOB_LIST);
+        commandResult.setStdOut(jobList);
+        commandResult.setStdErr(new ArrayList<>());
+        doReturn(commandResult).when(mockCmdExecutor).execute("qstat", "-xml");
+        final List<Job> result = sgeJobProvider.listJobs().getList();
 
-        final List<Job> jobList = jobProvider.listJobs().getList();
-
-        Assertions.assertEquals(jobProvider.getProviderType(), EngineType.SGE);
-        Assertions.assertEquals(0, jobList.size());
+        Assertions.assertEquals(sgeJobProvider.getProviderType(), EngineType.SGE);
+        Assertions.assertEquals(0, result.size());
     }
-
+    @Test
     public void shouldLoadXml() {
-        jobProvider.setQstatXml(VALID_XML);
-
-        final List<Job> jobList = jobProvider.listJobs().getList();
-
-        Assertions.assertEquals(jobProvider.getProviderType(), EngineType.SGE);
-
         final Job expectedFirstJob = Job.builder()
                 .id(7)
                 .name("STDIN")
@@ -109,7 +118,13 @@ public class SgeJobProviderTest {
                 .state(JobState.builder().category(JobState.Category.PENDING).state("pending").stateCode("qw").build())
                 .build();
 
-        Assertions.assertEquals(expectedFirstJob, jobList.get(1));
-        Assertions.assertEquals(expectedSecondJob, jobList.get(0));
+        final List<String> jobList = Collections.singletonList(VALID_XML);
+        commandResult.setStdOut(jobList);
+        commandResult.setStdErr(new ArrayList<>());
+        doReturn(commandResult).when(mockCmdExecutor).execute("qstat", "-xml");
+        Listing<Job> result = sgeJobProvider.listJobs();
+
+        Assertions.assertEquals(expectedFirstJob, result.getList().get(1));
+        Assertions.assertEquals(expectedSecondJob, result.getList().get(0));
     }
 }
