@@ -3,6 +3,7 @@ package gridengine.provider.job.sge;
 import gridengine.cmd.SimpleCmdExecutor;
 import gridengine.entity.CommandResult;
 import gridengine.entity.EngineType;
+import gridengine.entity.Listing;
 import gridengine.entity.job.Job;
 import gridengine.entity.job.JobState;
 import org.junit.jupiter.api.Assertions;
@@ -85,21 +86,17 @@ public class SgeJobProviderTest {
 
     @Test
     public void shouldNotFailWithEmptyJobList() {
-        jobProvider.setQstatXml(EMPTY_JOB_LIST);
+        final List<String> jobList = Collections.singletonList(EMPTY_JOB_LIST);
+        commandResult.setStdOut(jobList);
+        commandResult.setStdErr(new ArrayList<>());
+        doReturn(commandResult).when(mockCmdExecutor).execute("qstat", "-xml");
+        final List<Job> result = sgeJobProvider.listJobs().getList();
 
-        final List<Job> jobList = jobProvider.listJobs().getList();
-
-        Assertions.assertEquals(jobProvider.getProviderType(), EngineType.SGE);
-        Assertions.assertEquals(0, jobList.size());
+        Assertions.assertEquals(sgeJobProvider.getProviderType(), EngineType.SGE);
+        Assertions.assertEquals(0, result.size());
     }
-
+    @Test
     public void shouldLoadXml() {
-        jobProvider.setQstatXml(VALID_XML);
-
-        final List<Job> jobList = jobProvider.listJobs().getList();
-
-        Assertions.assertEquals(jobProvider.getProviderType(), EngineType.SGE);
-
         final Job expectedFirstJob = Job.builder()
                 .id(7)
                 .name("STDIN")
@@ -121,7 +118,13 @@ public class SgeJobProviderTest {
                 .state(JobState.builder().category(JobState.Category.PENDING).state("pending").stateCode("qw").build())
                 .build();
 
-        Assertions.assertEquals(expectedFirstJob, jobList.get(1));
-        Assertions.assertEquals(expectedSecondJob, jobList.get(0));
+        final List<String> jobList = Collections.singletonList(VALID_XML);
+        commandResult.setStdOut(jobList);
+        commandResult.setStdErr(new ArrayList<>());
+        doReturn(commandResult).when(mockCmdExecutor).execute("qstat", "-xml");
+        Listing<Job> result = sgeJobProvider.listJobs();
+
+        Assertions.assertEquals(expectedFirstJob, result.getList().get(1));
+        Assertions.assertEquals(expectedSecondJob, result.getList().get(0));
     }
 }
