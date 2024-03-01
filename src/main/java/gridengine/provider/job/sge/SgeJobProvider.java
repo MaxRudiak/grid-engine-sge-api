@@ -1,10 +1,12 @@
 package gridengine.provider.job.sge;
 
+import gridengine.cmd.CmdExecutor;
 import gridengine.cmd.SimpleCmdExecutor;
 import gridengine.entity.CommandResult;
 import gridengine.entity.EngineType;
 import gridengine.entity.Listing;
 import gridengine.entity.job.Job;
+import gridengine.entity.job.JobOptions;
 import gridengine.entity.job.JobState;
 import gridengine.entity.job.sge.SgeJob;
 import gridengine.entity.job.sge.SgeQueueListing;
@@ -23,24 +25,56 @@ public class SgeJobProvider implements JobProvider {
 
     private static final String QSTAT_XML = "qstat";
     private static final String TYPE_XML = "-xml";
-    private static final String SPACE = "\n";
+    private static final String NEW_LINE = "\n";
+    private static final String EMPTY_STRING = "";
     private final SimpleCmdExecutor simpleCmdExecutor;
+
+    /**
+     * Gets the type of the executed engine.
+     *
+     * @return The type of engine being executed.
+     */
+    @Override
+    public EngineType getProviderType() {
+        return EngineType.SGE;
+    }
 
     @Override
     public Listing<Job> listJobs() {
         final CommandResult commandResult = simpleCmdExecutor.execute(QSTAT_XML, TYPE_XML);
         if (commandResult.getExitCode() != 0) {
             throw new IllegalStateException(String.format("Exit code: %s; Error output: %s",
-                    commandResult.getExitCode(), String.join(SPACE, commandResult.getStdErr())));
+                    commandResult.getExitCode(), String.join(NEW_LINE, commandResult.getStdErr())));
         }
-        final SgeQueueListing queueListing = JaxbUtils.unmarshall(String.join(SPACE, commandResult.getStdOut()), SgeQueueListing.class);
+        final SgeQueueListing queueListing = JaxbUtils.unmarshall(String.join(NEW_LINE, commandResult.getStdOut()), SgeQueueListing.class);
         return mapJobs(queueListing);
     }
 
     @Override
-    public EngineType getProviderType() {
-        return EngineType.SGE;
+    public Job runJob(JobOptions options) {
+        final String[] qsubCommand = QsubCommandParser.makeQsubCommand(options);
+        return buildNewJob(getResultOfExecutedCommand(new SimpleCmdExecutor(), qsubCommand));
     }
+
+    private Job buildNewJob(String id) {
+        return Job.builder()
+                .id(Integer.parseInt(id))
+                .state(JobState.builder()
+                        .category(JobState.Category.PENDING)
+                        .build())
+                .build();
+    }
+
+    private String getResultOfExecutedCommand(final CmdExecutor cmdExecutor, final String[] command) {
+        final CommandResult result = cmdExecutor.execute(command);
+        if (result.getExitCode() != 0) {
+            throw new IllegalStateException(String.format("Exit code: %s; Error output: %s",
+                    result.getExitCode(), String.join(NEW_LINE, result.getStdErr())));
+        }
+        return QsubCommandParser.parseJobId(result.getStdOut().get(0)).orElse(EMPTY_STRING);
+    }
+
+
 
     private Listing<Job> mapJobs(final SgeQueueListing sgeQueueListing) {
         final List<SgeJob> sgeJobs = new ArrayList<>();
