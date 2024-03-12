@@ -12,6 +12,7 @@ import gridengine.entity.job.sge.SgeJob;
 import gridengine.entity.job.sge.SgeQueueListing;
 import gridengine.provider.job.JobProvider;
 import gridengine.provider.utils.JaxbUtils;
+import gridengine.provider.utils.QsubCommandParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
