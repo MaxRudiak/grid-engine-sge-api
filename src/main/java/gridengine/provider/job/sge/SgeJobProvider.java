@@ -66,7 +66,7 @@ public class SgeJobProvider implements JobProvider {
                 .build();
     }
 
-    private String getResultOfExecutedCommand(final CmdExecutor cmdExecutor, final String[] command) {
+    String getResultOfExecutedCommand(final CmdExecutor cmdExecutor, final String[] command) {
         final CommandResult result = cmdExecutor.execute(command);
         if (result.getExitCode() != 0) {
             throw new IllegalStateException(String.format("Exit code: %s; Error output: %s",
