@@ -3,6 +3,7 @@ package gridengine.service;
 import gridengine.entity.EngineType;
 import gridengine.entity.Listing;
 import gridengine.entity.job.Job;
+import gridengine.entity.job.JobOptions;
 import gridengine.provider.job.JobProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,10 @@ public class JobOperationProviderService {
 
     public Listing<Job> jobListing() {
         return getJobProvider().listJobs();
+    }
+
+    public String runJob(JobOptions options) {
+        return Integer.toString(getJobProvider().runJob(options).getId());
     }
 
     /**

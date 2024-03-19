@@ -1,16 +1,19 @@
 package gridengine.provider.job.sge;
 
+import gridengine.cmd.CmdExecutor;
 import gridengine.cmd.SimpleCmdExecutor;
 import gridengine.entity.CommandResult;
 import gridengine.entity.EngineType;
 import gridengine.entity.Listing;
 import gridengine.entity.job.Job;
+import gridengine.entity.job.JobOptions;
 import gridengine.entity.job.JobState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -126,5 +129,23 @@ public class SgeJobProviderTest {
 
         Assertions.assertEquals(expectedFirstJob, result.getList().get(1));
         Assertions.assertEquals(expectedSecondJob, result.getList().get(0));
+    }
+
+    @Test
+    public void shouldThrowExceptionBecauseNoCommand() {
+        final Throwable thrown = Assertions.assertThrows(IllegalStateException.class,
+                () -> sgeJobProvider.runJob(new JobOptions()));
+        Assertions.assertNotNull(thrown.getMessage());
+    }
+
+    @Test
+    public void shouldReturnScheduledJobIndex() {
+        final String[] command = new String[]{"qsub", "script.sh"};
+        final List<String> submittedJobMessage = Collections.singletonList("Your job 1 (\"script.sh\") has been submitted");
+        commandResult.setStdOut(submittedJobMessage);
+        commandResult.setStdErr(new ArrayList<>());
+        doReturn(commandResult).when(mockCmdExecutor).execute(command);
+        final String id = sgeJobProvider.getResultOfExecutedCommand(mockCmdExecutor, command);
+        Assertions.assertEquals("1", id);
     }
 }
